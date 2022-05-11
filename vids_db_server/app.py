@@ -25,10 +25,11 @@ from vids_db_server.rss import to_rss
 # from vids_db.database import Database
 from vids_db_server.version import VERSION
 
+DB_PATH = os.environ.get("DB_PATH_DIR", None)
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 executor = ThreadPoolExecutor(max_workers=8)
-vids_db = Database()
+vids_db = Database(DB_PATH)
 
 app = FastAPI()
 
