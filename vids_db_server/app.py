@@ -17,13 +17,13 @@ from fastapi.responses import (
 )
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
+from vids_db.database import Database  # type: ignore
+from vids_db.models import Video  # type: ignore
 
-from vids_db_server.database import Database  # type: ignore
 from vids_db_server.rss import to_rss
 
 # from vids_db.database import Database
 from vids_db_server.version import VERSION
-from vids_db_server.models import Video
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -101,7 +101,9 @@ async def api_query(query: Query) -> JSONResponse:
     out: List[Video] = []
     if query.channel_names is None:
         query.channel_names = []
-        out.extend(vids_db.get_video_list(query.start, query.end, None, query.limit))
+        out.extend(
+            vids_db.get_video_list(query.start, query.end, None, query.limit)
+        )
     else:
         for channel_name in query.channel_names:
             data = vids_db.get_video_list(

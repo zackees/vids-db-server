@@ -11,7 +11,7 @@ import unittest
 from datetime import datetime
 
 import requests  # type: ignore
-from vids_db_server.models import Video
+from vids_db.models import Video  # type: ignore
 from vids_db_server.testing.run_server_in_thread import (  # type: ignore
     HOST,
     PORT,

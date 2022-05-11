@@ -10,8 +10,8 @@ import tempfile
 import unittest
 from datetime import datetime
 
-from vids_db_server.database import Database
-from vids_db_server.models import Video
+from vids_db.database import Database  # type: ignore
+from vids_db.models import Video  # type: ignore
 
 
 class DatabaseTester(unittest.TestCase):
