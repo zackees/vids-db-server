@@ -9,8 +9,8 @@ Server for storing video information.
 
 # Demo
 
-  * `pip install vids-db`
-  * `vids-db --port 1234`
+  * `pip install vids-db-server`
+  * `vids_db_server --port 1234`
   * Now open up `http://127.0.0.1:1234` in a browser.
 
 # Demo from github
