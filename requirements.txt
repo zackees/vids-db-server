@@ -2,4 +2,4 @@ fastapi
 requests
 uvicorn[standard]
 feedparser
-vids-db
+vids-db>=1.0.1
