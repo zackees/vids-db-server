@@ -1,0 +1,4 @@
+include requirements.txt
+include requirements.testing.txt
+include vids_db_server/www/index.html
+include vids_db_server/www/preview.jpg
