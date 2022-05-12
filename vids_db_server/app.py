@@ -172,6 +172,4 @@ if not IS_PRODUCTION:
     async def clear_videos() -> JSONResponse:
         """Api endpoint for adding a snapshot."""
         vids_db.clear()
-        data = Video.from_list_of_dicts(json.loads(data).get("content"))
-        vids_db.update_many(data)
         return JSONResponse({"ok": True})
