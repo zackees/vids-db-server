@@ -19,6 +19,8 @@ RUN python -m pip install -e .
 # Expose the port and then launch the app.
 EXPOSE 80
 
-ENV DB_PATH_DIR=/var/vid-db-server/data
+ENV DB_PATH_DIR=/var/data
+
+RUN -rm /var/vid-db-server
 
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "vids_db_server.app:app"]
