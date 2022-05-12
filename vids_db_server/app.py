@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from typing import List, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import (
     JSONResponse,
@@ -26,10 +26,17 @@ from vids_db_server.rss import to_rss
 # from vids_db.database import Database
 from vids_db_server.version import VERSION
 
-IS_PRODUCTION = os.environ.get("MODE") == "PRODUCTION"
+MODE = os.environ.get("MODE", "DEVELOPMENT")
+IS_PRODUCTION = MODE == "PRODUCTION"
 
 DB_PATH = os.environ.get("DB_PATH_DIR", None)
 HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+if MODE == "PRODUCTION" and os.environ.get("API_KEY") is None:
+    raise Exception(
+        "API_KEY environment variable must be set in production mode"
+    )
 
 executor = ThreadPoolExecutor(max_workers=8)
 vids_db = Database(DB_PATH)
@@ -68,6 +75,13 @@ class RssQuery(BaseModel):  # pylint: disable=too-few-public-methods
     channel_name: str
     days: int = 7
     limit: int = -1
+
+
+def valid_api_key(api_key: Optional[str]) -> bool:
+    """Checks if the api key is valid."""
+    if "API_KEY" in os.environ:
+        return api_key == os.environ.get("API_KEY")
+    return True
 
 
 def log_error(msg: str) -> None:
@@ -140,16 +154,36 @@ async def api_rss_all_feed(hours_ago: int) -> RssResponse:
 
 
 @app.put("/put/video")
-async def api_add_video(video: Video) -> JSONResponse:
+async def api_add_video(
+    video: Video, api_key: Optional[str] = Header(None)
+) -> JSONResponse:
     """Api endpoint for adding a snapshot."""
+    if not valid_api_key(api_key):
+        return JSONResponse({"ok": False, "error": "Invalid API key"})
     vids_db.update(video)
     return JSONResponse({"ok": True})
 
 
 @app.put("/put/videos")
-async def api_add_videos(videos: List[Video]) -> JSONResponse:
+async def api_add_videos(
+    videos: List[Video], api_key: Optional[str] = Header(None)
+) -> JSONResponse:
     """Api endpoint for adding a snapshot."""
+    if not valid_api_key(api_key):
+        return JSONResponse({"ok": False, "error": "Invalid API key"})
     vids_db.update_many(videos)
+    return JSONResponse({"ok": True})
+
+
+@app.put("/test/put/video_with_json")
+async def add_test_videos_with_json(
+    json_str: str, api_key: Optional[str] = Header(None)
+) -> JSONResponse:
+    """Api endpoint for adding a snapshot."""
+    if not valid_api_key(api_key):
+        return JSONResponse({"ok": False, "error": "Invalid API key"})
+    vids = Video.parse_json_str(json_str)
+    vids_db.update(vids)
     return JSONResponse({"ok": True})
 
 
@@ -166,13 +200,6 @@ if not IS_PRODUCTION:
             data = filep.read()
         data = Video.from_list_of_dicts(json.loads(data).get("content"))
         vids_db.update_many(data)
-        return JSONResponse({"ok": True})
-
-    @app.put("/test/put/video_with_json")
-    async def add_test_videos_with_json(json_str: str) -> JSONResponse:
-        """Api endpoint for adding a snapshot."""
-        vids = Video.parse_json_str(json_str)
-        vids_db.update(vids)
         return JSONResponse({"ok": True})
 
     @app.post("/test/clear/videos")
