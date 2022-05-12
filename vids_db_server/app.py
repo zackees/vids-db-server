@@ -2,6 +2,7 @@
     Flask app for the ytclip command line tool. Serves an index.html at port 80. Clipping
     api is located at /clip
 """
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
@@ -24,6 +25,8 @@ from vids_db_server.rss import to_rss
 
 # from vids_db.database import Database
 from vids_db_server.version import VERSION
+
+IS_PRODUCTION = os.environ.get("MODE") == "PRODUCTION"
 
 DB_PATH = os.environ.get("DB_PATH_DIR", None)
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -148,3 +151,27 @@ async def api_add_videos(videos: List[Video]) -> JSONResponse:
     """Api endpoint for adding a snapshot."""
     vids_db.update_many(videos)
     return JSONResponse({"ok": True})
+
+
+if not IS_PRODUCTION:
+
+    @app.put("/test/put/videos")
+    async def add_test_videos() -> JSONResponse:
+        """Api endpoint for adding a snapshot."""
+        with open(
+            os.path.join(HERE, "testing", "test_data.json"),
+            encoding="utf-8",
+            mode="r",
+        ) as fp:
+            data = fp.read()
+        data = Video.from_list_of_dicts(json.loads(data).get("content"))
+        vids_db.update_many(data)
+        return JSONResponse({"ok": True})
+
+    @app.put("/test/clear/videos")
+    async def add_test_videos() -> JSONResponse:
+        """Api endpoint for adding a snapshot."""
+        vids_db.clear()
+        data = Video.from_list_of_dicts(json.loads(data).get("content"))
+        vids_db.update_many(data)
+        return JSONResponse({"ok": True})
