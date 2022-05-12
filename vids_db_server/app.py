@@ -117,7 +117,7 @@ async def api_query(query: Query) -> JSONResponse:
     return JSONResponse(Video.to_plain_list(out))
 
 
-@app.post("/rss/", response_model=List[Video])
+@app.post("/rss", response_model=List[Video])
 async def api_rss_channel_feed(query: RssQuery) -> RssResponse:
     """Api endpoint for adding a video"""
     now = datetime.now()
