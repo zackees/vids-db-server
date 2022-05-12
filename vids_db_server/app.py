@@ -162,8 +162,8 @@ if not IS_PRODUCTION:
             os.path.join(HERE, "testing", "test_data.json"),
             encoding="utf-8",
             mode="r",
-        ) as fp:
-            data = fp.read()
+        ) as filep:
+            data = filep.read()
         data = Video.from_list_of_dicts(json.loads(data).get("content"))
         vids_db.update_many(data)
         return JSONResponse({"ok": True})
@@ -178,5 +178,5 @@ if not IS_PRODUCTION:
     @app.post("/test/clear/videos")
     async def clear_videos() -> JSONResponse:
         """Api endpoint for adding a snapshot."""
-        vids_db.clear()
+        # vids_db.clear()
         return JSONResponse({"ok": True})

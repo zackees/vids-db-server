@@ -16,6 +16,7 @@ import os
 import subprocess
 import sys
 
+
 # This activation script adds the ability to run it from any path and also
 # aliasing pip3 and python3 to pip/python so that this works across devices.
 _ACTIVATE_SH = """
