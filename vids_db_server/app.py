@@ -83,7 +83,7 @@ app.mount("/www", StaticFiles(directory=os.path.join(HERE, "www")), "www")
 @app.get("/")
 async def index() -> RedirectResponse:
     """Returns index.html file"""
-    return RedirectResponse(url="/docs", status_code=302)
+    return RedirectResponse(url="/www/index.html", status_code=302)
 
 
 # Redirect to favicon.ico
@@ -175,7 +175,7 @@ if not IS_PRODUCTION:
         vids_db.update(vids)
         return JSONResponse({"ok": True})
 
-    @app.put("/test/clear/videos")
+    @app.post("/test/clear/videos")
     async def clear_videos() -> JSONResponse:
         """Api endpoint for adding a snapshot."""
         vids_db.clear()
