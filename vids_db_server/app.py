@@ -168,6 +168,13 @@ if not IS_PRODUCTION:
         vids_db.update_many(data)
         return JSONResponse({"ok": True})
 
+    @app.put("/test/put/video_with_json")
+    async def add_test_videos_with_json(json_str: str) -> JSONResponse:
+        """Api endpoint for adding a snapshot."""
+        vids = Video.parse_json_str(json_str)
+        vids_db.update(vids)
+        return JSONResponse({"ok": True})
+
     @app.put("/test/clear/videos")
     async def clear_videos() -> JSONResponse:
         """Api endpoint for adding a snapshot."""
