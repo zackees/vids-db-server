@@ -20,6 +20,8 @@ RUN python -m pip install -e .
 EXPOSE 80
 
 ENV DB_PATH_DIR=/var/data
-ENV MODE=PRODUCTION
+# For now keep in testing mode
+# ENV MODE=PRODUCTION
+ENV MODE=DEVELOPMENT
 
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "vids_db_server.app:app"]
