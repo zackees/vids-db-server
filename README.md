@@ -3,11 +3,10 @@
 Server for storing video information.
 
 ## Platform Unit Tests
+
 [![Actions Status](https://github.com/zackees/vids-db-server/workflows/MacOS_Tests/badge.svg)](https://github.com/zackees/vids-db-server/actions/workflows/test_macos.yml)
 [![Actions Status](https://github.com/zackees/vids-db-server/workflows/Win_Tests/badge.svg)](https://github.com/zackees/vids-db-server/actions/workflows/test_win.yml)
 [![Actions Status](https://github.com/zackees/vids-db-server/workflows/Ubuntu_Tests/badge.svg)](https://github.com/zackees/vids-db-server/actions/workflows/test_ubuntu.yml)
-
-Blah
 
 # Demo
 
