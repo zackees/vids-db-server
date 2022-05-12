@@ -169,7 +169,7 @@ if not IS_PRODUCTION:
         return JSONResponse({"ok": True})
 
     @app.put("/test/clear/videos")
-    async def add_test_videos() -> JSONResponse:
+    async def clear_videos() -> JSONResponse:
         """Api endpoint for adding a snapshot."""
         vids_db.clear()
         data = Video.from_list_of_dicts(json.loads(data).get("content"))
