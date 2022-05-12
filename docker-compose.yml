@@ -7,6 +7,6 @@ services:
       - published: 80
         target: 80
     volumes:
-      - data:/var/vids-db-server/data
+      - data:/var/data
 volumes:
   data:
