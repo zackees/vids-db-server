@@ -6,3 +6,7 @@ services:
     ports:
       - published: 80
         target: 80
+    volumes:
+      - data:/var/vid-db-server/data
+volumes:
+  data:

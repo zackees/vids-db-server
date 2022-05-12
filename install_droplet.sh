@@ -9,3 +9,4 @@ sudo apt install python3.10 -y
 sudo apt install python3-pip -y
 sudo apt install python-is-python3 -y
 pip install gunicorn uvicorn
+sudo mkdir -p /var/www/vids.blast.video/
