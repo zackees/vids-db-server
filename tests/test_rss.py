@@ -39,14 +39,16 @@ class RssTester(unittest.TestCase):
             make_vid("test_channel", "test_title"),
             make_vid("test_channel2", "test_title2"),
         ]
-        rss = to_rss(vidlist)
+        rss = to_rss(title="TITLE", vid_list=vidlist)
         parsed = feedparser.parse(rss)
         self.assertEqual(2, len(parsed.entries))
-        self.assertEqual("AllVids", parsed.feed.title)
+        self.assertEqual("TITLE", parsed.feed.title)
         entry = parsed.entries[0]
         self.assertEqual("test_channel", entry.channel_name)
         self.assertEqual("test_title", entry.title)
-        self.assertEqual("http://localhost/channel/test_channel", entry.channel_url)
+        self.assertEqual(
+            "http://localhost/channel/test_channel", entry.channel_url
+        )
         self.assertEqual("test description", entry.description)
         self.assertEqual("100", entry.views)
         self.assertEqual("60.0", entry.duration)
@@ -61,7 +63,7 @@ class RssTester(unittest.TestCase):
             make_vid("test_channel", "test_title"),
             make_vid("test_channel2", "test_title2"),
         ]
-        rss = to_rss(vidlist)
+        rss = to_rss(title="TITLE", vid_list=vidlist)
         vidlist = from_rss(rss)
         self.assertEqual(2, len(vidlist))
 

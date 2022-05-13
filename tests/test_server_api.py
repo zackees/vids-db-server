@@ -16,7 +16,6 @@ from vids_db_server.testing.run_server_in_thread import (  # type: ignore
     PORT,
     run_server_in_thread,
 )
-from vids_db_server.version import VERSION
 
 # In our testing environment we use the same database for all tests.
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -52,13 +51,6 @@ def make_vid(channel_name: str, title: str) -> Video:
 
 class ApiServerTester(unittest.TestCase):
     """Tester for the vids_db_server."""
-
-    # @unittest.skip("Skip for now")
-    def test_platform_executable(self) -> None:
-        """Opens up the vids_db_server and tests that the version returned is correct."""
-        with run_server_in_thread():
-            version = requests.get(f"{URL}/version").text
-            self.assertEqual(VERSION, version)
 
     # @unittest.skip("Skip for now")
     def test_platform_put_get(self) -> None:  # pylint: disable=no-self-use

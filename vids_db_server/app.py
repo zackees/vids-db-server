@@ -16,7 +16,6 @@ from fastapi.responses import (
     Response,
 )
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from vids_db.database import Database  # type: ignore
 from vids_db.models import Video  # type: ignore
 

@@ -12,15 +12,18 @@ from vids_db_server.date import iso_fmt
 
 def _rss_item(vid_info: Video) -> str:
     views = "0" if vid_info.views == "?" else vid_info.views
+    description = f"<![CDATA[{vid_info.description}]]>"
+    title = f"<![CDATA[{vid_info.title}]]>"
+    channel_name = f"<![CDATA[{vid_info.channel_name}]]>"
     return f"""
     <item>
-      <title>{vid_info.title}</title>
+      <title>{title}</title>
       <published>{iso_fmt(vid_info.date_published)}</published>
       <lastupdated>{iso_fmt(vid_info.date_lastupdated)}</lastupdated>
       <url>{vid_info.url}</url>
       <channel_url>{vid_info.channel_url}</channel_url>
-      <channel_name>{vid_info.channel_name}</channel_name>
-      <description>{vid_info.description}</description>
+      <channel_name>{channel_name}</channel_name>
+      <description>{description}</description>
       <thumbnail>{vid_info.img_src}</thumbnail>
       <duration>{vid_info.duration}</duration>
       <views>{views}</views>
@@ -39,7 +42,7 @@ def to_rss(title: str, vid_list: List[Video]) -> str:
 <rss version="2.0">
 """
     out += "  <channel>\n"
-    out +=f"    <title>{title}</title>"
+    out += f"    <title>{title}</title>"
     for video in vid_list:
         out += _rss_item(video)
     out += "  </channel>\n"
