@@ -20,7 +20,7 @@ from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from vids_db.database import Database  # type: ignore
 from vids_db.models import Video  # type: ignore
 
-from vids_db_server.rss import to_rss
+from vids_db_server.rss import from_rss, to_rss
 
 # from vids_db.database import Database
 from vids_db_server.version import VERSION
@@ -57,23 +57,6 @@ class RssResponse(Response):  # pylint: disable=too-few-public-methods
     """Returns an RSS response from a query."""
 
     media_type = "application/rss+xml"
-
-
-class Query(BaseModel):  # pylint: disable=too-few-public-methods
-    """Query structure."""
-
-    start: datetime
-    end: datetime
-    channel_names: Optional[List[str]] = None
-    limit: int = -1
-
-
-class RssQuery(BaseModel):  # pylint: disable=too-few-public-methods
-    """Query structure."""
-
-    channel_name: str
-    days: int = 7
-    limit: int = -1
 
 
 def valid_api_key(api_key: Optional[str]) -> bool:
@@ -113,35 +96,16 @@ async def api_info() -> PlainTextResponse:
     return PlainTextResponse(out)
 
 
-@app.post("/query")
-async def api_query(query: Query) -> JSONResponse:
-    """Api endpoint for adding a video"""
-    out: List[Video] = []
-    if query.channel_names is None:
-        query.channel_names = []
-        out.extend(
-            vids_db.get_video_list(query.start, query.end, None, query.limit)
-        )
-    else:
-        for channel_name in query.channel_names:
-            data = vids_db.get_video_list(
-                query.start, query.end, channel_name, query.limit
-            )
-            out.extend(data)
-    return JSONResponse(Video.to_plain_list(out))
-
-
 @app.get("/rss")
 async def api_rss_channel_feed(channel: str) -> RssResponse:
     """Api endpoint for adding a video"""
     now = datetime.now()
     start = now - timedelta(days=7)
-    kwargs = {}
     out = vids_db.get_video_list(start, now, channel)
     return RssResponse(to_rss(title=channel, vid_list=out))
 
 
-@app.get("/rss/all", response_model=List[Video])
+@app.get("/rss/all")
 async def api_rss_all_feed(hours_ago: int) -> RssResponse:
     """Api endpoint for adding a video"""
     now = datetime.now()
@@ -159,7 +123,7 @@ async def api_add_video(
     if not valid_api_key(api_key):
         return JSONResponse({"ok": False, "error": "Invalid API key"})
     vids_db.update(video)
-    return JSONResponse({"ok": True})
+    return JSONResponse({"ok": True, "msg": "updated 1 video"})
 
 
 @app.put("/put/videos")
@@ -170,6 +134,18 @@ async def api_add_videos(
     if not valid_api_key(api_key):
         return JSONResponse({"ok": False, "error": "Invalid API key"})
     vids_db.update_many(videos)
+    return JSONResponse({"ok": True, "msg": f"updated {len(videos)} videos"})
+
+
+@app.put("/put/rss")
+async def api_put_rss(
+    rss_str: str, api_key: Optional[str] = Header(None)
+) -> JSONResponse:
+    """Api endpoint for adding a snapshot from rss"""
+    if not valid_api_key(api_key):
+        return JSONResponse({"ok": False, "error": "Invalid API key"})
+    vids = from_rss(rss_str)
+    vids_db.update_many(vids)
     return JSONResponse({"ok": True})
 
 
