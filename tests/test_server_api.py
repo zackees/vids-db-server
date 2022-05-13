@@ -28,7 +28,7 @@ URL = f"http://{HOST}:{PORT}"
 if os.path.exists(TEST_DB):
     shutil.rmtree(TEST_DB, ignore_errors=True)
 
-os.environ.update({"vids_db_FILE": TEST_DB})
+os.environ.update({"DB_PATH_DIR": TEST_DB})
 
 
 def make_vid(channel_name: str, title: str) -> Video:
@@ -70,10 +70,6 @@ class ApiServerTester(unittest.TestCase):
             r.raise_for_status()
             r = requests.get(f"{URL}/rss/all?hours_ago=24")
             r.raise_for_status()
-            # data = r.json()
-            # self.assertEqual(1, len(data))
-            # v = VideoInfo(**data[0])
-            # self.assertEqual("test_title", v.title)
 
 
 if __name__ == "__main__":
