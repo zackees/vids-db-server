@@ -20,7 +20,7 @@ RUN python -m pip install -e .
 EXPOSE 80
 
 ENV DB_PATH_DIR=/var/data
-RUN rm -rf $DB_PATH_DIR
+
 # For now keep in testing mode
 # ENV MODE=PRODUCTION
 ENV MODE=DEVELOPMENT
