@@ -6,7 +6,6 @@ Tests the fastapi server.
 
 import os
 import shutil
-import time
 import unittest
 from datetime import datetime
 
