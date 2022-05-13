@@ -12,9 +12,14 @@ from vids_db_server.date import iso_fmt
 
 def _rss_item(vid_info: Video) -> str:
     views = "0" if vid_info.views == "?" else vid_info.views
-    description = f"<![CDATA[{vid_info.description}]]>"
-    title = f"<![CDATA[{vid_info.title}]]>"
-    channel_name = f"<![CDATA[{vid_info.channel_name}]]>"
+
+    def cdata(instr: str) -> str:
+        # return f"<![CDATA[{instr}]]>"
+        return instr
+
+    description = cdata(vid_info.description)
+    title = cdata(vid_info.title)
+    channel_name = cdata(vid_info.channel_name)
     return f"""
     <item>
       <title>{title}</title>
