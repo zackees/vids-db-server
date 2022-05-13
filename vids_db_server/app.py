@@ -2,7 +2,6 @@
     Flask app for the ytclip command line tool. Serves an index.html at port 80. Clipping
     api is located at /clip
 """
-import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
@@ -107,10 +106,11 @@ async def favicon() -> RedirectResponse:
     return RedirectResponse(url="/www/favicon.ico")
 
 
-@app.get("/version")
-async def api_version() -> PlainTextResponse:
+@app.get("/info")
+async def api_info() -> PlainTextResponse:
     """Api endpoint for getting the version."""
-    return PlainTextResponse(VERSION)
+    out = f"VERSION: {VERSION}\nMODE: {MODE}\n"
+    return PlainTextResponse(out)
 
 
 @app.post("/query")
@@ -131,26 +131,24 @@ async def api_query(query: Query) -> JSONResponse:
     return JSONResponse(Video.to_plain_list(out))
 
 
-@app.post("/rss", response_model=List[Video])
-async def api_rss_channel_feed(query: RssQuery) -> RssResponse:
+@app.get("/rss")
+async def api_rss_channel_feed(channel: str) -> RssResponse:
     """Api endpoint for adding a video"""
     now = datetime.now()
-    start = now - timedelta(days=query.days)
+    start = now - timedelta(days=7)
     kwargs = {}
-    if query.limit > 0:
-        kwargs["limit"] = query.limit
-    out = vids_db.get_video_list(start, now, query.channel_name, **kwargs)
-    return RssResponse(to_rss(out))
+    out = vids_db.get_video_list(start, now, channel)
+    return RssResponse(to_rss(title=channel, vid_list=out))
 
 
 @app.get("/rss/all", response_model=List[Video])
 async def api_rss_all_feed(hours_ago: int) -> RssResponse:
     """Api endpoint for adding a video"""
     now = datetime.now()
-    hours_ago = min(hours_ago, 48)
+    hours_ago = min(max(0, hours_ago), 48)
     start = now - timedelta(hours=hours_ago)
     out = vids_db.get_video_list(start, now)
-    return RssResponse(to_rss(out))
+    return RssResponse(to_rss(title="AllVids", vid_list=out))
 
 
 @app.put("/put/video")
@@ -175,41 +173,10 @@ async def api_add_videos(
     return JSONResponse({"ok": True})
 
 
-@app.put("/test/put/video_with_json")
-async def add_test_videos_with_json(
-    json_str: str, api_key: Optional[str] = Header(None)
-) -> JSONResponse:
-    """Api endpoint for adding a snapshot."""
-    if not valid_api_key(api_key):
-        return JSONResponse({"ok": False, "error": "Invalid API key"})
-    vids = Video.parse_json_str(json_str)
-    vids_db.update(vids)
-    return JSONResponse({"ok": True})
+if not IS_PRODUCTION:
 
-
-@app.put("/test/put/videos")
-async def add_test_videos() -> JSONResponse:
-    """Api endpoint for adding a snapshot."""
-    with open(
-        os.path.join(HERE, "testing", "test_data.json"),
-        encoding="utf-8",
-        mode="r",
-    ) as filep:
-        data = filep.read()
-    data = Video.from_list_of_dicts(json.loads(data).get("content"))
-    vids_db.update_many(data)
-    return JSONResponse({"ok": True})
-
-
-@app.post("/test/info")
-async def test_info() -> JSONResponse:
-    """Api endpoint for adding a snapshot."""
-    # vids_db.clear()
-    return JSONResponse({"ok": True, "mode": MODE})
-
-
-@app.post("/test/clear/videos")
-async def clear_videos() -> JSONResponse:
-    """Api endpoint for adding a snapshot."""
-    # vids_db.clear()
-    return JSONResponse({"ok": True})
+    @app.post("/test/clear/videos")
+    async def clear_videos() -> JSONResponse:
+        """Api endpoint for adding a snapshot."""
+        # vids_db.clear()
+        return JSONResponse({"ok": True})

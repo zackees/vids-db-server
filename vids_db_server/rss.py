@@ -30,7 +30,7 @@ def _rss_item(vid_info: Video) -> str:
 """
 
 
-def to_rss(vid_list: List[Video]) -> str:
+def to_rss(title: str, vid_list: List[Video]) -> str:
     """
     Returns a list of RSS items as a string.
     """
@@ -39,7 +39,7 @@ def to_rss(vid_list: List[Video]) -> str:
 <rss version="2.0">
 """
     out += "  <channel>\n"
-    out += "    <title>AllVids</title>"
+    out +=f"    <title>{title}</title>"
     for video in vid_list:
         out += _rss_item(video)
     out += "  </channel>\n"
