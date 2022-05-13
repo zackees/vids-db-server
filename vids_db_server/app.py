@@ -187,23 +187,29 @@ async def add_test_videos_with_json(
     return JSONResponse({"ok": True})
 
 
-if not IS_PRODUCTION:
+@app.put("/test/put/videos")
+async def add_test_videos() -> JSONResponse:
+    """Api endpoint for adding a snapshot."""
+    with open(
+        os.path.join(HERE, "testing", "test_data.json"),
+        encoding="utf-8",
+        mode="r",
+    ) as filep:
+        data = filep.read()
+    data = Video.from_list_of_dicts(json.loads(data).get("content"))
+    vids_db.update_many(data)
+    return JSONResponse({"ok": True})
 
-    @app.put("/test/put/videos")
-    async def add_test_videos() -> JSONResponse:
-        """Api endpoint for adding a snapshot."""
-        with open(
-            os.path.join(HERE, "testing", "test_data.json"),
-            encoding="utf-8",
-            mode="r",
-        ) as filep:
-            data = filep.read()
-        data = Video.from_list_of_dicts(json.loads(data).get("content"))
-        vids_db.update_many(data)
-        return JSONResponse({"ok": True})
 
-    @app.post("/test/clear/videos")
-    async def clear_videos() -> JSONResponse:
-        """Api endpoint for adding a snapshot."""
-        # vids_db.clear()
-        return JSONResponse({"ok": True})
+@app.post("/test/info")
+async def test_info() -> JSONResponse:
+    """Api endpoint for adding a snapshot."""
+    # vids_db.clear()
+    return JSONResponse({"ok": True, "mode": MODE})
+
+
+@app.post("/test/clear/videos")
+async def clear_videos() -> JSONResponse:
+    """Api endpoint for adding a snapshot."""
+    # vids_db.clear()
+    return JSONResponse({"ok": True})
