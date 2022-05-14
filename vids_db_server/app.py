@@ -135,11 +135,15 @@ async def api_rss_all_feed(hours_ago: int) -> RssResponse:
 
 
 @app.get("/json")
-async def api_json_channel_feed(channel: str) -> JSONResponse:
+async def api_json_channel_feed(
+    channel: str, days: Optional[int] = None, limit: Optional[int] = None
+) -> JSONResponse:
     """Api endpoint for adding a video"""
     now = datetime.now()
+    days = days or 30
+    limit = limit or 100
     start = now - timedelta(days=7)
-    vids = vids_db.get_video_list(start, now, channel)
+    vids = vids_db.get_video_list(start, now, channel, limit)
     json_vids = [v.to_json() for v in vids]
     return JSONResponse(json_vids)
 
