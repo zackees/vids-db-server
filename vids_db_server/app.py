@@ -78,7 +78,8 @@ app.mount("/www", StaticFiles(directory=os.path.join(HERE, "www")), "www")
 @app.get("/")
 async def index() -> RedirectResponse:
     """Returns index.html file"""
-    return RedirectResponse(url="/www/index.html", status_code=302)
+    # return RedirectResponse(url="/www/index.html", status_code=302)
+    return RedirectResponse(url="/docs", status_code=302)
 
 
 # Redirect to favicon.ico
