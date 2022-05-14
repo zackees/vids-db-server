@@ -96,6 +96,14 @@ async def api_info() -> PlainTextResponse:
     return PlainTextResponse(out)
 
 
+@app.get("/search")
+async def api_search(query: str) -> JSONResponse:
+    """Api endpoint for getting the version."""
+    vids = vids_db.query_video_list(query)
+    json_vids = [v.to_json() for v in vids]
+    return JSONResponse(json_vids)
+
+
 @app.get("/rss")
 async def api_rss_channel_feed(channel: str) -> RssResponse:
     """Api endpoint for adding a video"""
