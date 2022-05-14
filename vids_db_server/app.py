@@ -114,6 +114,27 @@ async def api_rss_all_feed(hours_ago: int) -> RssResponse:
     return RssResponse(to_rss(title="AllVids", vid_list=out))
 
 
+@app.get("/json")
+async def api_json_channel_feed(channel: str) -> JSONResponse:
+    """Api endpoint for adding a video"""
+    now = datetime.now()
+    start = now - timedelta(days=7)
+    vids = vids_db.get_video_list(start, now, channel)
+    json_vids = [v.to_json() for v in vids]
+    return JSONResponse(json_vids)
+
+
+@app.get("/json/all")
+async def api_json_all_feed(hours_ago: int) -> JSONResponse:
+    """Api endpoint for adding a video"""
+    now = datetime.now()
+    hours_ago = min(max(0, hours_ago), 48)
+    start = now - timedelta(hours=hours_ago)
+    vids = vids_db.get_video_list(start, now)
+    json_vids = [v.to_json() for v in vids]
+    return JSONResponse(json_vids)
+
+
 @app.put("/put/video")
 async def api_add_video(
     video: Video, api_key: Optional[str] = Header(None)
