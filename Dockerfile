@@ -25,4 +25,4 @@ ENV DB_PATH_DIR=/var/data
 ENV MODE=PRODUCTION
 # ENV MODE=DEVELOPMENT
 
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "--workers", "100", "vids_db_server.app:app"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "80", "--workers", "10", "vids_db_server.app:app"]
