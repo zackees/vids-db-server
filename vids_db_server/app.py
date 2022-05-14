@@ -16,7 +16,9 @@ from fastapi.responses import (
     Response,
 )
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from vids_db.database import Database  # type: ignore
+from vids_db.date import parse_datetime  # type: ignore
 from vids_db.models import Video  # type: ignore
 
 from vids_db_server.rss import from_rss, to_rss
@@ -50,6 +52,15 @@ app.add_middleware(
 )
 
 STARTUP_DATETIME = datetime.now()
+
+
+class MultiChannelJsonQuery(
+    BaseModel
+):  # pylint: disable=too-few-public-methods
+    """Query structure."""
+
+    hours_ago: int = 24
+    channel_names: List[str]
 
 
 class RssResponse(Response):  # pylint: disable=too-few-public-methods
@@ -130,6 +141,24 @@ async def api_json_channel_feed(channel: str) -> JSONResponse:
     start = now - timedelta(days=7)
     vids = vids_db.get_video_list(start, now, channel)
     json_vids = [v.to_json() for v in vids]
+    return JSONResponse(json_vids)
+
+
+@app.post("/json/many")
+async def api_json_multi(query: MultiChannelJsonQuery) -> JSONResponse:
+    """Api endpoint for adding a video"""
+    now = datetime.now()
+    start = now - timedelta(hours=query.hours_ago)
+    print(query.channel_names)
+    vids = []
+    for channel in query.channel_names:
+        vids += vids_db.get_video_list(start, now, channel)
+    json_vids = [v.to_json() for v in vids]
+    # Sort json_vids by date_published
+    json_vids.sort(
+        key=lambda v: parse_datetime(v["date_published"]).timestamp(),
+        reverse=True,
+    )
     return JSONResponse(json_vids)
 
 
