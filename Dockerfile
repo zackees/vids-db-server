@@ -15,7 +15,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Allow files to be pulled off the container easily.
-RUN python pip install -U magic-wormhole
+RUN python -m pip install -U magic-wormhole
 RUN python -m pip install -e .
 
 # Expose the port and then launch the app.
