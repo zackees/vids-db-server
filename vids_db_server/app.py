@@ -17,6 +17,7 @@ from fastapi.responses import (
 )
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
+from starlette import status
 from vids_db.database import Database  # type: ignore
 from vids_db.date import parse_datetime  # type: ignore
 from vids_db.models import Video  # type: ignore
@@ -25,6 +26,8 @@ from vids_db_server.rss import from_rss, to_rss
 
 # from vids_db.database import Database
 from vids_db_server.version import VERSION
+
+MAX_BULK_UPDATE_SIZE = 1000
 
 MODE = os.environ.get("MODE", "DEVELOPMENT")
 IS_PRODUCTION = MODE == "PRODUCTION"
@@ -195,6 +198,11 @@ async def api_add_videos(
     """Api endpoint for adding a snapshot."""
     if not valid_api_key(api_key):
         return JSONResponse({"ok": False, "error": "Invalid API key"})
+    if len(videos) > MAX_BULK_UPDATE_SIZE:
+        return JSONResponse(
+            {"ok": False, "error": f"videos length > {MAX_BULK_UPDATE_SIZE}"},
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+        )
     vids_db.update_many(videos)
     return JSONResponse({"ok": True, "msg": f"updated {len(videos)} videos"})
 
