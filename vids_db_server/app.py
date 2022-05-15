@@ -233,7 +233,7 @@ async def api_delete_channel(
     """Api endpoint for adding a snapshot from rss"""
     if not valid_api_key(api_key):
         return JSONResponse({"ok": False, "error": "Invalid API key"})
-    vids_db.delete_channel(channel_name)
+    vids_db.remove_by_channel_name(channel_name)
     return JSONResponse({"ok": True})
 
 
