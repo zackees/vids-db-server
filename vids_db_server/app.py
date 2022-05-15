@@ -110,6 +110,12 @@ async def api_info() -> PlainTextResponse:
     return PlainTextResponse(out)
 
 
+@app.get("/info/channels")
+async def api_info_channels() -> JSONResponse:
+    """Api endpoint for getting the version."""
+    return JSONResponse(sorted(vids_db.get_channel_names()))
+
+
 @app.get("/search")
 async def api_search(query: str) -> JSONResponse:
     """Api endpoint for getting the version."""
