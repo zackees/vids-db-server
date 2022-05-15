@@ -142,7 +142,7 @@ async def api_json_channel_feed(
     now = datetime.now()
     days = days or 30
     limit = limit or 100
-    start = now - timedelta(days=7)
+    start = now - timedelta(days=days)
     vids = vids_db.get_video_list(start, now, channel, limit)
     json_vids = [v.to_json() for v in vids]
     return JSONResponse(json_vids)
