@@ -3,18 +3,14 @@
     api is located at /clip
 """
 import os
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from typing import List, Optional
 
 from fastapi import FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import (
-    JSONResponse,
-    PlainTextResponse,
-    RedirectResponse,
-    Response,
-)
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from starlette import status
@@ -104,10 +100,15 @@ async def favicon() -> RedirectResponse:
 
 
 @app.get("/info")
-async def api_info() -> PlainTextResponse:
+async def api_info() -> JSONResponse:
     """Api endpoint for getting the version."""
-    out = f"VERSION: {VERSION}\nMODE: {MODE}\n"
-    return PlainTextResponse(out)
+    out = {
+        "version": VERSION,
+        "processid": os.getpid(),
+        "threadid": threading.get_ident(),
+        "mode": MODE,
+    }
+    return JSONResponse(out)
 
 
 @app.get("/info/channels")
