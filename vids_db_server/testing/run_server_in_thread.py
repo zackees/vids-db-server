@@ -31,13 +31,16 @@ def run_server_in_thread():
     Useful for testing, this function brings up a server.
     It's a context manager so that it can be used in a with statement.
     """
-    config = Config(APP_NAME, host=HOST, port=PORT, log_level="info", use_colors=False)
+    config = Config(
+        APP_NAME, host=HOST, port=PORT, log_level="info", use_colors=False
+    )
     server = ServerWithShutdown(config=config)
     thread = threading.Thread(target=server.run, daemon=True)
     thread.start()
     try:
         while not server.started:
             time.sleep(1e-3)
+        time.sleep(1)
         yield
     finally:
         server.should_exit = True
