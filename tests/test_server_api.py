@@ -68,8 +68,6 @@ class ApiServerTester(unittest.TestCase):
         headers = {
             "accept": "application/json",
             # Already added when you pass json= but not when you pass data=
-            # 'Content-Type': 'application/json',
-            "api-key": "76b26a2840b10a48adeabac29fbef5b",
         }
 
         json_data = [
@@ -90,7 +88,9 @@ class ApiServerTester(unittest.TestCase):
         ]
         with run_server_in_thread():
             response = requests.put(
-                "http://127.0.0.1/put/videos", headers=headers, json=json_data
+                "http://localhost:80/put/videos",
+                headers=headers,
+                json=json_data,
             )
             response.raise_for_status()
 
