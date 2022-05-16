@@ -9,7 +9,7 @@ import uvicorn
 from uvicorn.config import Config
 
 APP_NAME = "vids_db_server.app:app"
-HOST = "127.0.0.1"
+HOST = "localhost"
 PORT = 4422  # Arbitrarily chosen.
 
 
