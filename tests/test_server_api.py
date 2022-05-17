@@ -23,7 +23,7 @@ TEST_DB = os.path.join(HERE, "data")
 TEST_DATA_JSON = os.path.join(HERE, "test_data.json")
 URL = f"http://{HOST}:{PORT}"
 DB_URL = "https://db.blast.video"
-IS_GITHUB_ACTION = "GITHUB_ACTIONS" in os.environ
+IS_GITHUB_ACTION = "GITHUB_ACTIONS" in os.environ or False
 
 if os.path.exists(TEST_DB):
     shutil.rmtree(TEST_DB, ignore_errors=True)
@@ -52,7 +52,9 @@ def make_vid(channel_name: str, title: str) -> Video:
 class ApiServerTester(unittest.TestCase):
     """Tester for the vids_db_server."""
 
-    @unittest.skipIf(IS_GITHUB_ACTION, "Not compatible because of some network issue.")
+    @unittest.skipIf(
+        IS_GITHUB_ACTION, "Not compatible because of some network issue."
+    )
     def test_platform_put_get(self) -> None:  # pylint: disable=no-self-use
         """Opens up the vids_db and tests that the version returned is correct."""
         with run_server_in_thread():
@@ -62,7 +64,9 @@ class ApiServerTester(unittest.TestCase):
             r = requests.get(f"{URL}/rss/all?hours_ago=24")
             r.raise_for_status()
 
-    @unittest.skipIf(IS_GITHUB_ACTION, "Not compatible because of some network issue.")
+    @unittest.skipIf(
+        IS_GITHUB_ACTION, "Not compatible because of some network issue."
+    )
     def test_put_videos(self) -> None:  # pylint: disable=no-self-use
         """Tests the ingestment of the data"""
 
@@ -89,7 +93,7 @@ class ApiServerTester(unittest.TestCase):
         ]
         with run_server_in_thread():
             response = requests.put(
-                "http://localhost:80/put/videos",
+                f"{URL}/put/videos",
                 headers=headers,
                 json=json_data,
             )
