@@ -21,9 +21,7 @@ from vids_db_server.testing.run_server_in_thread import (  # type: ignore
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEST_DB = os.path.join(HERE, "data")
 TEST_DATA_JSON = os.path.join(HERE, "test_data.json")
-URL = f"http://{HOST}:{PORT}"
-DB_URL = "https://db.blast.video"
-IS_GITHUB_ACTION = "GITHUB_ACTIONS" in os.environ or False
+REMOTE_ENDPOINT = f"http://{HOST}:{PORT}"
 
 if os.path.exists(TEST_DB):
     shutil.rmtree(TEST_DB, ignore_errors=True)
@@ -38,11 +36,11 @@ def make_vid(channel_name: str, title: str) -> Video:
         title=title,
         date_published=datetime.now(),
         date_lastupdated=datetime.now(),
-        channel_url=f"{URL}/channel/{channel_name}",
+        channel_url=f"{REMOTE_ENDPOINT}/channel/{channel_name}",
         source="rumble.com",
-        url=f"{URL}/video/{title}",
-        img_src=f"{URL}/img/{title}.png",
-        iframe_src=f"{URL}/iframe/{title}",
+        url=f"{REMOTE_ENDPOINT}/video/{title}",
+        img_src=f"{REMOTE_ENDPOINT}/img/{title}.png",
+        iframe_src=f"{REMOTE_ENDPOINT}/iframe/{title}",
         views=100,
         duration=60,
         description="",
@@ -52,21 +50,15 @@ def make_vid(channel_name: str, title: str) -> Video:
 class ApiServerTester(unittest.TestCase):
     """Tester for the vids_db_server."""
 
-    @unittest.skipIf(
-        IS_GITHUB_ACTION, "Not compatible because of some network issue."
-    )
     def test_platform_put_get(self) -> None:  # pylint: disable=no-self-use
         """Opens up the vids_db and tests that the version returned is correct."""
         with run_server_in_thread():
             vid = make_vid("test_channel", "test_title")
-            r = requests.put(f"{URL}/put/video", json=vid.to_json())
+            r = requests.put(f"{REMOTE_ENDPOINT}/put/video", json=vid.to_json())
             r.raise_for_status()
-            r = requests.get(f"{URL}/rss/all?hours_ago=24")
+            r = requests.get(f"{REMOTE_ENDPOINT}/rss/all?hours_ago=24")
             r.raise_for_status()
 
-    @unittest.skipIf(
-        IS_GITHUB_ACTION, "Not compatible because of some network issue."
-    )
     def test_put_videos(self) -> None:  # pylint: disable=no-self-use
         """Tests the ingestment of the data"""
 
@@ -93,7 +85,7 @@ class ApiServerTester(unittest.TestCase):
         ]
         with run_server_in_thread():
             response = requests.put(
-                f"{URL}/put/videos",
+                f"{REMOTE_ENDPOINT}/put/videos",
                 headers=headers,
                 json=json_data,
             )
