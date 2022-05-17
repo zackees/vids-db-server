@@ -20,8 +20,7 @@ def _rss_item(vid_info: Video) -> str:
     description = cdata(vid_info.description)
     title = cdata(vid_info.title)
     channel_name = cdata(vid_info.channel_name)
-    return f"""
-    <item>
+    return f"""    <item>
       <title>{title}</title>
       <published>{iso_fmt(vid_info.date_published)}</published>
       <lastupdated>{iso_fmt(vid_info.date_lastupdated)}</lastupdated>
@@ -42,8 +41,7 @@ def to_rss(title: str, vid_list: List[Video]) -> str:
     """
     Returns a list of RSS items as a string.
     """
-    out = """
-<?xml version="1.0" encoding="UTF-8"?>
+    out = """<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
 """
     out += "  <channel>\n"

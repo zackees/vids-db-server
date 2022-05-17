@@ -65,7 +65,8 @@ class MultiChannelJsonQuery(
 class RssResponse(Response):  # pylint: disable=too-few-public-methods
     """Returns an RSS response from a query."""
 
-    media_type = "application/rss+xml"
+    media_type = "application/xml"
+    charset = "utf-8"
 
 
 def valid_api_key(api_key: Optional[str]) -> bool:
