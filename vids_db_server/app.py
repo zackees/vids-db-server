@@ -12,7 +12,7 @@ from fastapi import FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
+from pydantic import AnyUrl, BaseModel  # pylint: disable=no-name-in-module
 from starlette import status
 from vids_db.database import Database  # type: ignore
 from vids_db.date import parse_datetime  # type: ignore
@@ -65,7 +65,7 @@ class MultiChannelJsonQuery(
 class UrlQuery(BaseModel):  # pylint: disable=too-few-public-methods
     """Query structure."""
 
-    urls: List[str]
+    urls: List[AnyUrl]
 
 
 class RssResponse(Response):  # pylint: disable=too-few-public-methods
