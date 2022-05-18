@@ -3,9 +3,9 @@ Tests rss generation.
 """
 
 import unittest
-from datetime import datetime
 
 import feedparser  # type: ignore
+from vids_db.date import now_local  # type: ignore
 from vids_db.models import Video  # type: ignore
 from vids_db_server.rss import from_rss, to_rss
 
@@ -17,8 +17,8 @@ def make_vid(channel_name: str, title: str) -> Video:
     return Video(
         channel_name=channel_name,
         title=title,
-        date_published=datetime.now(),
-        date_lastupdated=datetime.now(),
+        date_published=now_local(),
+        date_lastupdated=now_local(),
         channel_url=f"{URL}/channel/{channel_name}",
         source="rumble.com",
         url=f"{URL}/video/{title}",
@@ -46,7 +46,9 @@ class RssTester(unittest.TestCase):
         entry = parsed.entries[0]
         self.assertEqual("test_channel", entry.channel_name)
         self.assertEqual("test_title", entry.title)
-        self.assertEqual("http://localhost/channel/test_channel", entry.channel_url)
+        self.assertEqual(
+            "http://localhost/channel/test_channel", entry.channel_url
+        )
         self.assertEqual("test description", entry.description)
         self.assertEqual("100", entry.views)
         self.assertEqual("60.0", entry.duration)

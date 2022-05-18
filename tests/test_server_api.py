@@ -7,9 +7,9 @@ Tests the fastapi server.
 import os
 import shutil
 import unittest
-from datetime import datetime
 
 import requests  # type: ignore
+from vids_db.date import now_local  # type: ignore
 from vids_db.models import Video  # type: ignore
 from vids_db_server.testing.run_server_in_thread import (  # type: ignore
     HOST,
@@ -34,8 +34,8 @@ def make_vid(channel_name: str, title: str) -> Video:
     return Video(
         channel_name=channel_name,
         title=title,
-        date_published=datetime.now(),
-        date_lastupdated=datetime.now(),
+        date_published=now_local(),
+        date_lastupdated=now_local(),
         channel_url=f"{REMOTE_ENDPOINT}/channel/{channel_name}",
         source="rumble.com",
         url=f"{REMOTE_ENDPOINT}/video/{title}",
