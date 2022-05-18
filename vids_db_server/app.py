@@ -254,7 +254,7 @@ async def api_delete_channel(
     return JSONResponse({"ok": True})
 
 
-@app.post("/test/clear/videos")
+@app.delete("/test/clear/videos")
 async def clear_videos(
     api_key: Optional[str] = Header(None),
 ) -> JSONResponse:
