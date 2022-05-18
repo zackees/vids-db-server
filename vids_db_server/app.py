@@ -151,7 +151,7 @@ async def api_rss_all_feed(hours_ago: int) -> RssResponse:
     return RssResponse(to_rss(title="AllVids", vid_list=out))
 
 
-@app.get("/json/urls")
+@app.post("/json/from_urls")
 async def api_json_urls(query: UrlQuery) -> JSONResponse:
     """Api endpoint for adding a video"""
     vids = vids_db.get_by_urls(query.urls)
