@@ -10,7 +10,7 @@ WORKDIR /app
 # Install all the dependencies as it's own layer.
 COPY ./requirements.txt requirements.txt
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Add requirements file and install.
 COPY . .
