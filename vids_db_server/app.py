@@ -27,9 +27,11 @@ MAX_BULK_UPDATE_SIZE = 1000
 
 MODE = os.environ.get("MODE", "DEVELOPMENT")
 IS_PRODUCTION = MODE == "PRODUCTION"
-
-DB_PATH = os.environ.get("DB_PATH_DIR", None)
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+
+DB_PATH = os.environ.get("DB_PATH_DIR", os.path.join(ROOT, "data"))
+print(f"{__file__}: DB_PATH={DB_PATH}")
 
 
 if MODE == "PRODUCTION" and os.environ.get("API_KEY") is None:
