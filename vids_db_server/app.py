@@ -254,14 +254,12 @@ async def api_delete_channel(
     return JSONResponse({"ok": True})
 
 
-if not IS_PRODUCTION:
-
-    @app.post("/test/clear/videos")
-    async def clear_videos(
-        api_key: Optional[str] = Header(None),
-    ) -> JSONResponse:
-        """Api endpoint for adding a snapshot."""
-        if not valid_api_key(api_key):
-            return JSONResponse({"ok": False, "error": "Invalid API key"})
-        vids_db.clear()
-        return JSONResponse({"ok": True})
+@app.post("/test/clear/videos")
+async def clear_videos(
+    api_key: Optional[str] = Header(None),
+) -> JSONResponse:
+    """Api endpoint for adding a snapshot."""
+    if not valid_api_key(api_key):
+        return JSONResponse({"ok": False, "error": "Invalid API key"})
+    vids_db.clear()
+    return JSONResponse({"ok": True})
