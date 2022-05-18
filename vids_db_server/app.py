@@ -62,6 +62,12 @@ class MultiChannelJsonQuery(
     channel_names: List[str]
 
 
+class UrlQuery(BaseModel):  # pylint: disable=too-few-public-methods
+    """Query structure."""
+
+    urls: List[str]
+
+
 class RssResponse(Response):  # pylint: disable=too-few-public-methods
     """Returns an RSS response from a query."""
 
@@ -143,6 +149,14 @@ async def api_rss_all_feed(hours_ago: int) -> RssResponse:
     start = now - timedelta(hours=hours_ago)
     out = vids_db.get_video_list(start, now)
     return RssResponse(to_rss(title="AllVids", vid_list=out))
+
+
+@app.get("/json/urls")
+async def api_json_urls(query: UrlQuery) -> JSONResponse:
+    """Api endpoint for adding a video"""
+    vids = vids_db.get_by_urls(query.urls)
+    json_vids = [v.to_json() for v in vids]
+    return JSONResponse(json_vids)
 
 
 @app.get("/json")
