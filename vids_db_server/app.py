@@ -243,6 +243,18 @@ async def api_put_rss(
     return JSONResponse({"ok": True})
 
 
+@app.put("/put/json")
+async def api_put_json(
+    json_str: str, api_key: Optional[str] = Header(None)
+) -> JSONResponse:
+    """Api endpoint for adding a snapshot from rss"""
+    if not valid_api_key(api_key):
+        return JSONResponse({"ok": False, "error": "Invalid API key"})
+    vids = Video.parse_json(json_str)
+    vids_db.update_many(vids)
+    return JSONResponse({"ok": True})
+
+
 @app.delete("/delete/channel")
 async def api_delete_channel(
     channel_name: str, api_key: Optional[str] = Header(None)
