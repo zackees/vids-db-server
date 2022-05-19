@@ -35,9 +35,7 @@ print(f"{__file__}: DB_PATH={DB_PATH}")
 
 
 if MODE == "PRODUCTION" and os.environ.get("API_KEY") is None:
-    raise Exception(
-        "API_KEY environment variable must be set in production mode"
-    )
+    raise Exception("API_KEY environment variable must be set in production mode")
 
 executor = ThreadPoolExecutor(max_workers=8)
 vids_db = Database(DB_PATH)
@@ -55,9 +53,7 @@ app.add_middleware(
 STARTUP_DATETIME = datetime.now()
 
 
-class MultiChannelJsonQuery(
-    BaseModel
-):  # pylint: disable=too-few-public-methods
+class MultiChannelJsonQuery(BaseModel):  # pylint: disable=too-few-public-methods
     """Query structure."""
 
     hours_ago: int = 24
