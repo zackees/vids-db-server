@@ -4,7 +4,6 @@
 """
 import os
 import threading
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -37,7 +36,6 @@ print(f"{__file__}: DB_PATH={DB_PATH}")
 if MODE == "PRODUCTION" and os.environ.get("API_KEY") is None:
     raise Exception("API_KEY environment variable must be set in production mode")
 
-executor = ThreadPoolExecutor(max_workers=8)
 vids_db = Database(DB_PATH)
 
 app = FastAPI()
