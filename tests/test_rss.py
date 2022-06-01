@@ -53,7 +53,7 @@ class RssTester(unittest.TestCase):
         self.assertEqual("100", entry.views)
         self.assertEqual("60.0", entry.duration)
         self.assertEqual("rumble.com", entry.host)
-        self.assertIn(URL, entry.url)
+        self.assertIn(URL, entry.link)
         self.assertIn(URL, entry.iframe)
         self.assertIn(URL, entry.thumbnail)
 
