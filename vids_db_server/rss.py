@@ -29,7 +29,7 @@ def _rss_item(vid_info: Video) -> str:
       <channel_name>{channel_name}</channel_name>
       <description>{description}</description>
       <thumbnail>{vid_info.img_src}</thumbnail>
-      <dc:creator>{vid_info.channel_name}]]></dc:creator>
+      <dc:creator>{vid_info.channel_name}></dc:creator>
       <duration>{vid_info.duration}</duration>
       <views>{views}</views>
       <host>{vid_info.source}</host>
@@ -43,7 +43,7 @@ def to_rss(title: str, vid_list: List[Video]) -> str:
     Returns a list of RSS items as a string.
     """
     out = """<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 """
     out += "  <channel>\n"
     out += f"    <title>{title}</title>"
