@@ -4,6 +4,7 @@
 """
 import os
 import threading
+import traceback
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -190,12 +191,21 @@ async def api_json_multi(query: MultiChannelJsonQuery) -> JSONResponse:
 @app.get("/json/all")
 async def api_json_all_feed(hours_ago: int) -> JSONResponse:
     """Api endpoint for adding a video"""
-    now = datetime.now()
-    hours_ago = min(max(0, hours_ago), 48)
-    start = now - timedelta(hours=hours_ago)
-    vids = vids_db.get_video_list(start, now)
-    json_vids = [v.to_json() for v in vids]
-    return JSONResponse(json_vids)
+    try:
+        now = datetime.now()
+        hours_ago = min(max(0, hours_ago), 48)
+        start = now - timedelta(hours=hours_ago)
+        vids = vids_db.get_video_list(start, now)
+        json_vids = [v.to_json() for v in vids]
+        return JSONResponse(json_vids)
+    except Exception as e:  # pylint: disable=broad-except
+        error_str = str(e)
+        stack_trace_str = traceback.format_exc()
+        log_error(error_str)
+        return JSONResponse({
+            "error": error_str,
+            "stack_trace": stack_trace_str
+        })
 
 
 @app.put("/put/video")
