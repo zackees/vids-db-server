@@ -1,0 +1,5 @@
+fastapi
+requests
+uvicorn[standard]
+feedparser
+vids-db>=1.2.4
