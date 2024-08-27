@@ -10,7 +10,7 @@ from pprint import pprint
 class EnvTester(unittest.TestCase):
     """Tests the functionality of the rss algorithm."""
 
-    def tests_env_printout(self) -> None:  # pylint: disable=no-self-use
+    def tests_env_printout(self) -> None:
         """Simply prints out the environment variables."""
         pprint(dict(os.environ))
 

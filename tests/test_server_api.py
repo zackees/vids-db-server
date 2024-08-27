@@ -50,16 +50,16 @@ def make_vid(channel_name: str, title: str) -> Video:
 class ApiServerTester(unittest.TestCase):
     """Tester for the vids_db_server."""
 
-    def test_platform_put_get(self) -> None:  # pylint: disable=no-self-use
+    def test_platform_put_get(self) -> None:
         """Opens up the vids_db and tests that the version returned is correct."""
         with run_server_in_thread():
             vid = make_vid("test_channel", "test_title")
-            r = requests.put(f"{REMOTE_ENDPOINT}/put/video", json=vid.to_json())
+            r = requests.put(f"{REMOTE_ENDPOINT}/put/video", json=vid.to_json(), timeout=30)
             r.raise_for_status()
-            r = requests.get(f"{REMOTE_ENDPOINT}/rss/all?hours_ago=24")
+            r = requests.get(f"{REMOTE_ENDPOINT}/rss/all?hours_ago=24", timeout=30)
             r.raise_for_status()
 
-    def test_put_videos(self) -> None:  # pylint: disable=no-self-use
+    def test_put_videos(self) -> None:
         """Tests the ingestment of the data"""
 
         headers = {
@@ -88,6 +88,7 @@ class ApiServerTester(unittest.TestCase):
                 f"{REMOTE_ENDPOINT}/put/videos",
                 headers=headers,
                 json=json_data,
+                timeout=30,
             )
             response.raise_for_status()
 

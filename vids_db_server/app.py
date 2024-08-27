@@ -198,8 +198,8 @@ async def api_json_all_feed(hours_ago: int) -> JSONResponse:
         vids = vids_db.get_video_list(start, now)
         json_vids = [v.to_json() for v in vids]
         return JSONResponse(json_vids)
-    except Exception as e:  # pylint: disable=broad-except
-        error_str = str(e)
+    except Exception as err:  # pylint: disable=broad-except
+        error_str = str(err)
         stack_trace_str = traceback.format_exc()
         log_error(error_str)
         return JSONResponse({
