@@ -1,0 +1,5 @@
+#!/bin/bash
+
+flake8 vids_db_server tests
+pylint vids_db_server tests
+mypy vids_db_server tests  --show-trace
